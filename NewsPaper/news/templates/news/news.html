@@ -1,0 +1,21 @@
+{% extends 'layout/default.html' %}
+{% load custom_filters %}
+{% block title %}
+ Полный список
+{% endblock %}
+{% block content %}
+<h2>{{title|censor}}</h2>
+
+    {% for p in news %}
+        <h2>{{p.heading|censor}}</h2>
+        <p>{{p.date_time_creation}}</p>
+        <p>{{p.text_post|truncatewords_html:50|censor}}</p>
+    {% endfor %}
+</ul>
+<h1>{{page}}</h1>
+{% include 'news/parts/paginator.html' %}
+
+
+
+
+{% endblock %}

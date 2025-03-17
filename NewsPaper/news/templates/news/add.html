@@ -1,0 +1,22 @@
+{% extends 'layout/default.html' %}
+
+{% block style %}
+      div, input {
+        margin-top: 25px;
+      }
+
+{% endblock style %}
+
+{% block title %}
+ Добавление
+{% endblock %}
+{% block content %}
+
+<h1>Добовление Post</h1>
+<form method="POST">
+  {% csrf_token %}
+  {{form}}
+  <input class="btn btn-success" type="submit" value="Добавить">
+</form>
+
+{% endblock %}

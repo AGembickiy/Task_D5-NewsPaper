@@ -1,0 +1,107 @@
+# импортируем все модели
+
+from news.models import *
+from random import randint
+
+# создаем пользователей
+
+user1 = User.objects.create_user(username = 'Пользователь 1', first_name = 'Иванов', last_name = 'Иван' )
+user2 = User.objects.create_user(username = 'Пользователь 2', first_name = 'Петров', last_name = 'Петр' )
+
+# создаем авторов
+
+author1 = Author.objects.create(user = user1)
+author2 = Author.objects.create(user = user2)
+
+# добовляем категории
+
+sports = Category.objects.create(topic = 'Спорт')
+policy = Category.objects.create(topic = 'Политика')
+education = Category.objects.create(topic = 'Образование')
+economy = Category.objects.create(topic = 'Экономика')
+
+# добовляем стать/новости
+article1 = Post.objects.create(author = author1, post_category = (sports, economy, education), heading = 'Статья №1', text_post = """Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore repudiandae ab,
+consectetur dignissimos incidunt quis officia tempora nobis velit nam doloremque
+nostrum cupiditate sint nesciunt delectus ut consequatur natus quidem eius. Quae
+nemo voluptatem eius! Dolores, nobis! Corrupti iure illo qui ducimus blanditiis
+nobis! Ipsam facere consequatur porro modi, quidem nemo aut tempore incidunt
+commodi nihil error reprehenderit molestias architecto quod dicta accusantium
+praesentium numquam hic nobis dolorem officiis, cum temporibus. Dolore
+praesentium quam soluta sapiente cum repudiandae eaque facere velit, voluptas
+debitis facilis officiis tempore iure corrupti architecto est nam cupiditate
+voluptate vel quis delectus amet atque. Sit a ratione velit adipisci atque magni
+cum voluptate distinctio iusto voluptatibus ipsam consectetur quod illo
+quibusdam consequuntur, cupiditate praesentium optio nemo consequatur id error
+magnam assumenda quas expedita! Ea atque quia commodi qui ratione, consectetur,
+vitae obcaecati doloribus sunt possimus recusandae esse sequi provident vel
+ipsam tenetur voluptas? Illo, unde ratione!""")
+
+article2 = Post.objects.create(author = author2, post_category = (policy, economy), heading = 'Статья №2', text_post = """Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur dolores quasi minus obcaecati, cum pariatur unde deleniti non illo quam odio? Dignissimos, autem. Accusantium deserunt soluta officiis labore, delectus voluptatum fuga omnis pariatur optio commodi perferendis itaque doloribus minima voluptate excepturi quae! Vitae quam voluptatum dolor reiciendis aperiam nisi excepturi esse, exercitationem voluptatem incidunt tempora quo laboriosam quasi eveniet, ut impedit eos consequuntur praesentium tempore numquam, laudantium hic officiis enim! Quis eos suscipit cupiditate aut vitae pariatur accusantium officiis quo inventore omnis, voluptatibus minus iste reiciendis incidunt voluptas quae autem ea saepe eum ab repellendus, quibusdam odit nulla. Placeat dignissimos voluptatibus illo ad, tempore ea nihil explicabo dolor qui! Mollitia deserunt voluptatibus suscipit ipsa molestiae rerum! Enim sapiente facere veritatis iure eveniet nisi in nam, quisquam veniam ad qui rem saepe a excepturi 
+eos totam repellendus officiis accusantium maxime velit neque libero itaque? Nulla quod officiis fugit 
+ex perferendis recusandae? Eligendi in quidem deleniti pariatur optio quod velit laboriosam, provident 
+itaque, ullam aliquam non magni fugit, inventore perspiciatis quaerat ratione quae facere. Commodi eos 
+dolorem, nostrum nesciunt, dolorum repellat id hic quidem atque qui incidunt ratione illo fugiat nemo 
+voluptate corrupti ducimus veniam, odio labore sint? Magnam, sed aliquid. Dicta?""")
+
+news1 = Post.objects.create(author = author2, post_status = 'NE' ,post_category = (policy, education), heading = 'НОВОСТЬ №1', text_post = """Lorem ipsum dolor sit, 
+amet consectetur adipisicing elit. Molestiae nobis quo eos libero atque consectetur officia in quas distinctio. Aliquid 
+ut excepturi repudiandae tempora possimus eum earum fugiat culpa ipsam, eligendi architecto nostrum quas et nobis dolore 
+vero laudantium nisi quidem accusamus iure inventore impedit labore! Culpa sint praesentium nam earum dolor autem 
+laudantium dolores alias commodi minus quae nisi cum, totam quas est ipsum veniam quasi! Officiis deserunt dolor 
+similique blanditiis, impedit fugiat recusandae dicta illo officia molestiae architecto dolore natus placeat, 
+explicabo neque reiciendis tempora aliquam rem minus porro eaque itaque sapiente. Provident saepe earum doloribus 
+veritatis esse.""")
+
+# добовляем коментариев
+
+comment1 = Comment.objects.create(post = article2, user=user1, text_comment = 'Первый коментарий к статье №2')
+comment2 = Comment.objects.create(post = article1, user=user2, text_comment = 'Первый коментарий к статье №1')
+comment3 = Comment.objects.create(post = news1, user=user2, text_comment = 'Первый коментарий к новости №1')
+comment4 = Comment.objects.create(post = article2, user=user1, text_comment = 'Второй коментарий к статье №2')
+
+# корректировка рейтинга статьям/новостям и комментариям 
+
+lists = [article1, article2, news1, comment1, comment2, comment3, comment4]
+for i in lists:
+    s = randint(1, 10)
+    if s % 2 == 0:      
+        for j in range(s):
+            i.like()
+            i.save()
+    else:
+        for j in range(s):
+            i.dislike()
+            i.save()
+
+# обновление рейтинга
+
+author1.update_rating()
+author1.save()
+author2.update_rating()
+author2.save()
+
+# определения лучшего автора
+
+best_user = Author.objects.all().order_by('-rating_author')[0]
+
+# вывод данных лучшего автора
+
+print(best_user)
+
+# определения лучшей статьи/новости
+
+best_post = Post.objects.all().order_by('-rating_post')[0]
+
+# вывод лучшей статьи/новости
+
+print(best_post)
+
+#все коментарии к лучшей статье/новости
+
+list_comment = best_post.posts.all()
+
+#вывод всех лучшей коментариев к статье/новости
+
+for i in list_comment:
+    print(i)
