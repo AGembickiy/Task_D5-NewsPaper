@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from .models import Post
 from .filters import PostFilter
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class PostList(ListView):
@@ -56,10 +57,10 @@ class PostAdd(CreateView):
     form_class = PostForm
 
 
-
-class UpdatePost(UpdateView):
+class UpdatePost(LoginRequiredMixin, UpdateView):
     template_name = 'news/add.html'
     form_class = PostForm
+    login_url = '/accounts/login/'  # Укажите URL для перенаправления на страницу входа, если пользователь не аутентифицирован
 
     def get_object(self, **kwargs):
        id = self.kwargs.get('pk')

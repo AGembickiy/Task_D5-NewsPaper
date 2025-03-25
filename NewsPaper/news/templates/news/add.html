@@ -12,11 +12,11 @@
 {% endblock %}
 {% block content %}
 
-<h1>Добовление Post</h1>
-<form method="POST">
+<h1>Добавление Post</h1>
+<form method="POST" class="form-style">
   {% csrf_token %}
-  {{form}}
-  <input class="btn btn-success" type="submit" value="Добавить">
+  {{ form.as_p }}
+  <input class="btn btn-primary" type="submit" value="Добавить">
 </form>
 
 {% endblock %}
